@@ -66,7 +66,314 @@ CREATE TABLE customers();
 
 ALTER TABLE customers ADD COLUMN customer_id SERIAL PRIMARY KEY;
 
+18. Display the details of the customers table so you can make sure your new column is there.
+
+\d customers
+
+19. There it is. Add a column named phone for customers phone numbers. Make it a varying character that has a maximum length of 15 characters. Also make sure it can't be null, and that it has to be unique.
+
+ALTER TABLE customers ADD COLUMN phone VARCHAR(15) NOT NULL UNIQUE;
+
+20. Add the last column. Call it name and make it a VARCHAR(40) that can't be null.
+
+ALTER TABLE customers ADD COLUMN name VARCHAR(40) NOT NULL;
+
+21. Display the details of the customers table.
+
+\d customers
+
+22. That table is finished. Lastly, you need a table to store which bikes are rented and who has rented them. Create a new table named rentals.
+
+CREATE TABLE rentals();
+
+23. Add a rental_id column to your new table. Make it automatically increment with SERIAL and make it the primary key for this table.
+
+ALTER TABLE rentals ADD COLUMN rental_id SERIAL PRIMARY KEY;
+
+24. Display the details of the rentals table.
+
+\d rentals
+
+25. Next, you need a column for the customer who is renting a bike. Add column named customer_id. This will have an id of a customer from the customers table. Make the column an INT and NOT NULL to start.
+
+ALTER TABLE rentals ADD COLUMN customer_id INT NOT NULL;
+
+26. Make the column you just added a foreign key that references the customer_id column from the customers table. Here's an example of how you can do that:
+
+ALTER TABLE rentals ADD FOREIGN KEY(customer_id) REFERENCES customers(customer_id);
+
+27. Display the details of the rentals table to make sure your key is set.
+
+\d rentals
+
+28. That foreign key is set. You need another column so you know what bike a customer is renting. Add a column named bike_id and make it an INT and NOT NULL.
+
+ALTER TABLE rentals ADD COLUMN bike_id INT NOT NULL;
+
+29. Make that column a foreign key that references the bike_id column from the bikes table so you know what bike the id is for.
+
+ALTER TABLE rentals ADD FOREIGN KEY(bike_id) REFERENCES bikes(bike_id);
+
+30. Display the details of the rentals table so you can make sure the key is correct.
+
+\d rentals
+
+31.  Moving along. You want to know when a customer rents a bike, and when it gets returned. Add a column to your rentals table named date_rented that's a type of DATE. Make sure the entry can't be null, and give it a default value of NOW().
+
+ALTER TABLE rentals ADD COLUMN date_rented DATE NOT NULL DEFAULT NOW();
+
+32. Display the details of the rentals table again.
+
+\d rentals
+
+33. It looks good. Lastly, you need a column for when a customer returns a bike. Add a column named date_returned that's a type of DATE.
+
+ALTER TABLE rentals ADD COLUMN date_returned DATE;
+
+34. View the details of the table again.
+
+\d rentals
+
+35. The tables are all finished. Display all the tables so you can see what you ended up with.
+
+36. You have nine bikes in your inventory. Add the first one to your bikes table. It has a type of Mountain and a size of 27. Make sure to put your VARCHAR values in single quotes. The bike_id and available columns should be filled in automatically, so you don't need to worry about those.
+
+INSERT INTO bikes(type, size) VALUES('Mountain', 27);
+
+37. View all the columns in your bikes table with SELECT.
+
+SELECT * from bikes;
+
+38. Looks like it's all working, the bike_id and available columns were filled in automatically. Insert another bike. Give it a type of Mountain and a size of 28.
+
+INSERT INTO bikes(type, size) VALUES('Mountain', 28);
+
+39. Add another Mountain bike to your inventory. Make it a 29 inch bike.
+
+INSERT INTO bikes(type, size) VALUES('Mountain', 29);
+
+40. Add a 27 inch Road bike to the table.
+
+INSERT INTO bikes(type, size) VALUES('Road', 27);
+
+41. Use SELECT to view all the data in the bikes table again.
+
+SELECT * from bikes;
+
+42. Add the two bikes to your inventory, they are 28 and 29 inch Road bikes. Try to add them both with one command.
+
+INSERT INTO bikes(type, size) VALUES('Road', 28), ('Road', 29);
+
+43. There's three more bikes. Add 19, 20, and 21 inch BMX bikes to your table. Try to add them with one command.
+
+INSERT INTO bikes(type, size) VALUES('BMX', 19), ('BMX', 20), ('BMX', 21);
+
+44. View all the data in your bikes table.
+
+SELECT * from bikes;
+
+45. Your current inventory is all added. For the rest of the project, I recommend leaving that terminal open and connected, and that you should "split" the terminal so you have a second one to use for bash commands. Do that by clicking the "hamburger" menu at the top left of the window, going to the "terminal" section, and clicking "split terminal". After you have opened it, use the touch command to create a file named bike-shop.sh in the project folder.
+
+touch bike-shop.sh
+
+46. This file will be the program for your bike rental shop. Open the file and add a "shebang" at the top so it uses bash when it's executed. If you don't remember, it looks like this: #!/bin/bash.
+
+ #!/bin/bash
+
+47. In the file, use echo with the -e flag to print ~~~~~ Bike Rental Shop ~~~~~ with a new line at the beginning and end.
+
+echo -e "\n~~~~~ Bike Rental Shop ~~~~~\n"
+
+48. Use the terminal (not the psql one) and the chmod command to make your file executable. Add the +x flag and bike-shop.sh to the command to do that.
+
+chmod +x bike-shop.sh
+
+49. Type ./bike-shop.sh in the terminal to run your script.
+
+./bike-shop.sh
+
+50. In the script, create an empty function named MAIN_MENU. This will have a few options to enter when the script runs to rent or return a bike.
+
+MAIN_MENU() {
+
+}
+
+51. In your function, echo the text How may I help you? so that there's a greeting when you go to the menu.
+
+echo "How may I help you?"
+
+52. Call your MAIN_MENU at the bottom of the file so the function runs when you start the script.
+
+MAIN_MENU
+
+53. Run the file in the terminal again so you can see what it is outputting.
+
+./bike-shop.sh
+
+54. It's coming along. Add another echo command in the function below the other one. Make it output text that looks like this:
+
+echo -e "\n1. Rent a bike\n2. Return a bike\n3. Exit"
+
+55. Run the file to make sure it worked.
+
+./bike-shop.sh
+
+56. You have some options displaying. Next, you need to get input from whoever is using the program. Use the read command to read input into a variable called MAIN_MENU_SELECTION below the options.
+
+read MAIN_MENU_SELECTION
+
+57. When an option gets entered, you need to take a user to one of those other menus. Add an empty RENT_MENU function below the MAIN_MENU function.
+
+RENT_MENU() {
+
+}
+
+58. For the time being, just echo Rent Menu in the function so you can see if it's working.
+
+echo "Rent Menu"
+
+59. Add an empty RETURN_MENU function below the RENT_MENU function for when a user enters the option to return a bike.
+
+RETURN_MENU() {
+
+}
+
+60. Use echo to print Return Menu in the function you just added. You will change these later.
+
+echo "Return Menu"
+
+61. Add an empty EXIT function below the RETURN_MENU function for when a user wants to exit the program.
+
+EXIT() {
+
+}
+
+62. This one probably doesn't need a placeholder message. In the EXIT function, use echo to print Thank you for stopping in. with a new line at the beginning and end of the message.
+
+echo -e "\nThank you for stopping in.\n"
+
+63. When a user enters an option at the main menu, you want to take them to the appropriate sub-menu. You can use a case statement for this. Here's an example:
+
+case $MAIN_MENU_SELECTION in
+  1) RENT_MENU ;;
+  2) RETURN_MENU ;;
+  3) EXIT ;;
+  *) MAIN_MENU ;;
+esac
+
+64. Run the script a few times and try out the different menus. Be sure to enter something other than one of the options to go to the main menu.
+
+./bike-shop.sh
+
+65. Add an argument to where you call MAIN_MENU in the case statement. It should be Please enter a valid option.. The next step will adjust the function so the message is printed when a user enters an invalid option.
+
+case $MAIN_MENU_SELECTION in
+  1) RENT_MENU ;;
+  2) RETURN_MENU ;;
+  3) EXIT ;;
+  *) MAIN_MENU "Please enter a valid option." ;;
+esac
+
+66. At the top of the MAIN_MENU function, add an if condition that checks if there's an argument ($1) passed to the function. If there is, print the message with a new line in front of it.
+
+if [[ $1 ]]
+then
+  echo -e "\n$1"
+fi
+
+67. Run the script and enter an invalid option to see the message. Exit the program when you are done.
+
+./bike-shop.sh
+
+68. Looks good. Delete the echo "Rent Menu" from the RENT_MENU function so you can start adding the ability to rent a bike from the database.
+
+RENT_MENU() {
+
+}
+69. In the RENT_MENU function, add three single line comments; get available bikes, if no bikes available, and send to main menu, in that order.
+
+RENT_MENU() {
+  # get available bikes
+
+  # if no bikes available
+
+  # send to main menu
+
+}
+
+70. To get the bikes available, you need to query the database from your script. Below the "shebang", add a PSQL variable that looks like this: PSQL="psql -X --username=freecodecamp --dbname=bikes --tuples-only -c". You will then be able to use it to query the database like this: $($PSQL "<query_here>").
+
+PSQL="psql -X --username=freecodecamp --dbname=bikes --tuples-only -c"
+
+71. Below the get available bikes comment. Create an AVAILABLE_BIKES variable that gets the bike_id, type, and size columns from the bikes table for the bikes that are available. Order the results by their bike_id column. Here's an example: AVAILABLE_BIKES=$($PSQL "<query_here>")
+
+AVAILABLE_BIKES=$($PSQL "SELECT bike_id, type, size FROM bikes WHERE available = true ORDER BY bike_id")
+
+72. Below the new variable, use echo to print it. Place it in double quotes so it prints any new lines.
+
+echo "$AVAILABLE_BIKES"
+
+73. Run your script and go to the rent menu to see if the available bikes are being printed.
+
+./bike-shop.sh
+
+74. Awesome. In the psql prompt, set the available column to false for all the bikes so you can see what it prints when there's no bikes available.
+
+UPDATE bikes SET available = false WHERE available = true;
 
 
+75. Run your script and go to the rent menu to see the output.
 
+./bike-shop.sh
 
+76. So if there's no bike available, the variable will be empty. In the script, below the if no bikes available comment, add an if condition that checks if the variable is empty. Use -z to check if it's empty. Place the send to main menu comment in its STATEMENTS area.
+
+if [[ -z $AVAILABLE_BIKES ]]
+then
+  # send to main menu
+fI
+
+77. Below the comment in the if you just added. Send users to the main menu and give them the message, Sorry, we don't have any bikes available right now.
+
+if [[ -z $AVAILABLE_BIKES ]]
+then
+  # send to main menu
+  MAIN_MENU "Sorry, we don't have any bikes available right now."
+fi
+
+78. Run the script and go to the rent menu to see the message. When you are done, exit the program.
+
+/bike-shop.sh
+
+79. If no bikes are available, you will get that message. Add an else to the if condition for when there is bikes available. In it, add four single line comments; display available bikes, ask for bike to rent, if input is not a number, and send to main menu.
+
+if [[ -z $AVAILABLE_BIKES ]]
+then
+  # send to main menu
+  MAIN_MENU "Sorry, we don't have any bikes available right now."
+else
+  # display available bikes
+
+  # ask for bike to rent
+
+  # if input is not a number
+
+  # send to main menu
+
+fi
+
+80. Below the display available bikes comment you just added, use echo to print Here are the bikes we have available: with a new line in front of the message
+
+echo -e "\nHere are the bikes we have available:"
+
+81. Move the echo command that prints all the available bikes below the message you just added.
+
+echo "$AVAILABLE_BIKES"
+
+82. In the psql prompt, set all the bikes, except for the BMX bikes, back to true so you can see a list of bikes to rent.
+
+UPDATE bikes SET available = true WHERE type != 'BMX';
+
+83. Run the script and go to the rent menu to see the list of bikes available.
+
+./bike-shop.sh
