@@ -1,0 +1,63 @@
+1. The first thing you need to do is start the terminal. Do that by clicking the "hamburger" menu at the top left of the screen, going to the "terminal" section, and clicking "new terminal". Once you open a new one, type echo hello terminal into the terminal and press enter.
+
+echo hello terminal
+
+2. You are going to build a bike rental shop. It will have a database, and a bash script to interact with the database. Use the terminal to connect to PostgreSQL by entering psql --username=freecodecamp --dbname=postgres.
+
+psql --username=freecodecamp --dbname=postgres
+
+3. List the databases with \l to see what databases are here.
+
+\l
+
+4. You need your own database for the bike shop. Create a new database named bikes.
+
+CREATE DATABASE bikes;
+
+5. List databases again to make sure your database got created.
+
+\l
+
+6. There it is. Connect to it so you can start building the structure of your bike shop database.
+
+\c bikes
+
+7. Your database needs three tables. One for your bike inventory, one for your customers, and one for the bikes that are rented out. Create a table named bikes in your database for the inventory.
+
+CREATE TABLE bikes(); 
+
+8. Display the tables to make sure your table got created.
+
+\d
+
+9. The table will have a few columns for bike information. First, is a unique ID column. Add a column to the bikes table named bike_id. Give it a type of SERIAL and make it a PRIMARY KEY.
+
+ALTER TABLE bikes ADD COLUMN bike_id SERIAL PRIMARY KEY;
+
+10. Use the display command to view the details of the bikes table.
+
+\d bikes
+
+11. The first column is set. Add a column named type for the type of bike. Make it a VARCHAR(50) and give it a constraint of NOT NULL.
+
+ALTER TABLE bikes ADD COLUMN type VARCHAR(50) NOT NULL;
+
+12. Display the details of the bikes table again.
+
+\d bikes
+
+13. The first two columns look good. Add a column named size to the bikes table that is an INT and has the NOT NULL constraint. This will be for the size of each bike.
+
+ALTER TABLE bikes ADD COLUMN size INT NOT NULL;
+
+14. Add another column to the table named available. Make it a boolean and has a constraint of NOT NULL. Also give it a default value of TRUE. This will be set to false when someone rents out a bike.
+
+ALTER TABLE bikes ADD COLUMN available BOOLEAN NOT NULL DEFAULT TRUE;
+
+15. Display the details of the bikes table again so you can make sure it's how you want it.
+
+\d bikes
+
+
+
+
