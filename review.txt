@@ -58,6 +58,15 @@ ALTER TABLE bikes ADD COLUMN available BOOLEAN NOT NULL DEFAULT TRUE;
 
 \d bikes
 
+16. That table is done for now. Create another table named customers. It will store a name and phone number for each customer that rents a bike.
+
+CREATE TABLE customers();
+
+17. Add a customer_id column to your new table that is a type of SERIAL and make it a PRIMARY KEY.
+
+ALTER TABLE customers ADD COLUMN customer_id SERIAL PRIMARY KEY;
+
+
 
 
 
