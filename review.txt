@@ -136,6 +136,8 @@ ALTER TABLE rentals ADD COLUMN date_returned DATE;
 
 35. The tables are all finished. Display all the tables so you can see what you ended up with.
 
+\d
+
 36. You have nine bikes in your inventory. Add the first one to your bikes table. It has a type of Mountain and a size of 27. Make sure to put your VARCHAR values in single quotes. The bike_id and available columns should be filled in automatically, so you don't need to worry about those.
 
 INSERT INTO bikes(type, size) VALUES('Mountain', 27);
@@ -331,7 +333,7 @@ UPDATE bikes SET available = false WHERE available = true;
 if [[ -z $AVAILABLE_BIKES ]]
 then
   # send to main menu
-fI
+fi
 
 77. Below the comment in the if you just added. Send users to the main menu and give them the message, Sorry, we don't have any bikes available right now.
 
@@ -343,7 +345,7 @@ fi
 
 78. Run the script and go to the rent menu to see the message. When you are done, exit the program.
 
-/bike-shop.sh
+./bike-shop.sh
 
 79. If no bikes are available, you will get that message. Add an else to the if condition for when there is bikes available. In it, add four single line comments; display available bikes, ask for bike to rent, if input is not a number, and send to main menu.
 
@@ -377,3 +379,154 @@ UPDATE bikes SET available = true WHERE type != 'BMX';
 83. Run the script and go to the rent menu to see the list of bikes available.
 
 ./bike-shop.sh
+
+84. Instead of directly printing the list, pipe the output into a while loop that reads each line. Here's how that looks:
+
+echo "$AVAILABLE_BIKES" | while read <VAR_1> <VAR_2> <VAR_3> <VAR_4> <VAR_5>
+do
+  <STATEMENTS>
+done
+
+It will read the first line of your AVAILABLE_BIKES variable into the five variables. Each variable being the next word in the line. Read each line into variables, BIKE_ID BAR TYPE BAR SIZE. In the <STATEMENTS> area, use echo to print the BIKE_ID, TYPE, and SIZE variables, in that order.
+
+echo "$AVAILABLE_BIKES" | while read BIKE_ID BAR TYPE BAR SIZE
+do
+  echo "$BIKE_ID $TYPE $SIZE"
+done
+
+85. Run the script and go to the rent menu again to see if it's working.
+
+./bike-shop.sh
+
+86. It's working 😄 Adjust the echo command that prints the bike info so that the first line printed would look like this: 1) 27" Mountain Bike. The rest would look the same, but with their bike info. Make sure to escape any characters you need to.
+
+echo "$AVAILABLE_BIKES" | while read BIKE_ID BAR TYPE BAR SIZE
+do
+  echo "$BIKE_ID) $SIZE\" $TYPE Bike"
+done
+
+87. Run the script and go to the rent menu again to see what it looks like now.
+
+./bike-shop.sh
+
+88. That's better. Below the ask for bike to rent comment, print Which one would you like to rent? with a new line in front of it.
+
+echo -e "\nWhich one would you like to rent?"
+
+89. Just below that, add a command to read input into a variable named BIKE_ID_TO_RENT.
+
+read BIKE_ID_TO_RENT
+
+90. Next, you want to find out how to test if the user input is a number. In the terminal, enter [[ a =~ [0-9] ]]; echo $? to see if a is a number. The conditional expression will run, and echo $? will print the exit code of it (the last command).
+
+[[ a =~ [0-9] ]]; echo $?
+
+91. It printed 1 for false. Meaning that a did not match the pattern [0-9], or a did not contain a number from 0-9. Enter the same commands, but check if a1 matches the pattern.
+
+[[ a1 =~ [0-9] ]]; echo $?
+
+92. That printed 0 for true. a1 does contain a number from 0-9. Enter the same command, but change the pattern to ^[0-9]$. The ^ signifies the start of the pattern, and $ means the end. So the input will have to start, contain a number 0-9, and end.
+
+[[ a1 =~ ^[0-9]$ ]]; echo $?
+
+93. 1 for false. a1 does not match the pattern. Using the same syntax, check if 1 matches the pattern.
+
+[[ 1 =~ ^[0-9]$ ]]; echo $?
+
+94. 1 does match the pattern. It starts, contains a number, and ends. Check if 11 matches the same pattern.
+
+[[ 11 =~ ^[0-9]$ ]]; echo $?
+
+95. That did not match because the pattern only allows a single number. Add a + after the [0-9] to allow any strings that start, contain one or more numbers, and end.
+
+[[ 11 =~ ^[0-9]+$ ]]; echo $?
+
+96. So that pattern will match any positive integers. You want to check if the input is not a number. Add ! in front of the comparison of the previous command to do that.
+
+[[ ! 11 =~ ^[0-9]+$ ]]; echo $?
+
+97. Back in your script, below the if input is not a number comment, add an if condition that checks if the input is not a number using the method you just practiced. Add the send to main menu comment in the then area of the if.
+
+if [[ ! $BIKE_ID_TO_RENT =~ ^[0-9]+$ ]]
+then
+  # send to main menu
+fi
+
+98. If the $BIKE_ID_TO_RENT variable is not a number, add the code to send users to the main menu with the message, That is not a valid bike number.
+
+MAIN_MENU "That is not a valid bike number."
+
+99. Run the script, go to the rent menu, and enter something that isn't a number to make sure it is working. When you are done, exit the program.
+
+./bike-shop.sh
+
+100. Add an else area for when the input is a number. Add these three single line comments in it; get bike availability, if not available, send to main menu.
+ 
+if [[ ! $BIKE_ID_TO_RENT =~ ^[0-9]+$ ]]
+then
+  # send to main menu
+  MAIN_MENU "That is not a valid bike number."
+else
+  # get bike availability
+
+  # if not available
+
+  # send to main menu
+
+fi
+
+101. Below the get bike availability comment you just added, create a BIKE_AVAILABILITY variable. Set it equal to a query that gets the available column from the bikes table for the input. Also, make sure to only get the row if it is available.
+
+BIKE_AVAILABILITY=$($PSQL "SELECT available FROM bikes WHERE bike_id = $BIKE_ID_TO_RENT AND available = true")
+
+102. Right below the variable you just created, use echo to print it so you can see what it looks like.
+
+echo $BIKE_AVAILABILITY
+
+103. Run the script a few times, go to the rent menu, enter a bike that is available and one that isn't. You should have some BMX bikes that aren't available.
+
+104. The variable will be t or empty. Below the if not available comment, add an if condition that checks if it's empty. Put the send to main menu comment in it's statements area.
+
+if [[ -z $BIKE_AVAILABILITY ]]
+then
+  # send to main menu
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
